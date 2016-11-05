@@ -59,6 +59,9 @@ def play():
 
     player = Player()
 
+    LEFT_PRESSED = False
+    RIGHT_PRESSED = False
+
     while True:
         for event in pygame.event.get():
             #print(event)
@@ -68,11 +71,21 @@ def play():
                 if event.key == pygame.K_DOWN:
                     player.speed -= 0.1 
                 elif event.key == pygame.K_LEFT:
-                    player.steer = 45
+		    LEFT_PRESSED = True
+                    player.steer = 45 if (not RIGHT_PRESSED) else -45
                 elif event.key == pygame.K_RIGHT:
-                    player.steer = -45
+		    RIGHT_PRESSED = True
+                    player.steer = -45 if (not LEFT_PRESSED) else 45
             elif event.type == pygame.KEYUP:
-                player.steer = 0
+		if event.key in [pygame.K_LEFT,pygame.K_RIGHT]:
+		    if LEFT_PRESSED and RIGHT_PRESSED:
+			player.steer = -player.steer
+		    else:
+			player.steer = 0
+		    if event.key == pygame.K_LEFT:
+                        LEFT_PRESSED = False
+		    elif event.key == pygame.K_RIGHT:
+		        RIGHT_PRESSED = False
 
         player.update()
 
