@@ -5,15 +5,15 @@ class Player():
     OFFSET = 90
 
     def __init__(self):
-	self.start_pose_x = 0
-	self.start_pose_y = 0
+	self.start_pose_x = 50
+	self.start_pose_y = 50
 
         self.car = pygame.transform.scale(pygame.image.load('Audi.png'), (64, 64))
         self.rect = self.car.get_rect() # for drawing purpose
 	
 	self.pose = self.rect.copy() # actual pose of the vehicle
-	self.pose.x = self.start_pose_x-self.rect.width/2
-	self.pose.y = self.start_pose_y-self.rect.height/2
+	self.pose.x = self.start_pose_x
+	self.pose.y = self.start_pose_y
 
 	self.L = 2
 
