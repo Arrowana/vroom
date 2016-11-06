@@ -50,14 +50,6 @@ class Player(pygame.sprite.Sprite):
 	print "y: ",self.pose.y
 	print "heading: ", self.heading
 
-    def draw(self, screen):
-        car_rotated = pygame.transform.rotate(self.car, self.heading-Player.OFFSET)
-
-	self.rect.x = self.pose.x-car_rotated.get_rect().width/2
-	self.rect.y = self.pose.y-car_rotated.get_rect().height/2
-	
-        screen.blit(car_rotated, self.rect)
-
 def rot_center(image, angle):
     """rotate a Surface, maintaining position."""
     rot_sprite = pygame.transform.rotate(image, angle)
