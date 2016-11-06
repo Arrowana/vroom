@@ -43,8 +43,13 @@ class Player(pygame.sprite.Sprite):
         self.image, self.rect = rot_center(self.base_image, 
             self.heading-self.OFFSET)
 
-        self.rect.left = self.pose.x
-        self.rect.top = self.pose.y
+        print(self.rect)
+
+        rect_x, rect_y = self.rect.topleft
+        self.rect.left = self.pose.x + rect_x
+        self.rect.top = self.pose.y + rect_y
+
+        print "after", self.rect
 
 	print "x: ",self.pose.x
 	print "y: ",self.pose.y
@@ -53,7 +58,7 @@ class Player(pygame.sprite.Sprite):
 def rot_center(image, angle):
     """rotate a Surface, maintaining position."""
     rot_sprite = pygame.transform.rotate(image, angle)
-    rot_sprite_rect = rot_sprite.get_rect(center=image.get_rect().center)  #rot_image is not defined 
+    rot_sprite_rect = rot_sprite.get_rect(center=image.get_rect().center)
 
     return rot_sprite, rot_sprite_rect
 
