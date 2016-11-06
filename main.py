@@ -70,9 +70,21 @@ class Camera:
         self.width = width 
         self.height = height
 
-    def update(self, target):
-        self.x = -target.pose.x + self.width/2
-        self.y = -target.pose.y + self.height/2
+    def update(self, target, track):
+	# Limits the camera to the track perimeter
+	if((target.pose.x-self.width/2)<track.rect.left):
+            self.x = track.rect.left
+	elif((target.pose.x+self.width/2)>track.rect.right):
+	    self.x = self.width-track.rect.right
+	else:
+	    self.x = -target.pose.x + self.width/2
+
+	if((target.pose.y-self.height/2)<track.rect.top):
+            self.y = track.rect.top
+	elif((target.pose.y+self.height/2)>track.rect.bottom):
+	    self.y = self.height-track.rect.bottom
+	else:
+            self.y = -target.pose.y + self.height/2
 
     def apply(self, target):
         return target.rect.move(self.x, self.y)
@@ -129,7 +141,7 @@ def play():
 		        RIGHT_PRESSED = False
 
         player.update()
-        camera.update(player)
+        camera.update(player,track)
 
         screen.fill((0,0,0))
 
