@@ -103,9 +103,10 @@ def generate():
     hull=convex_hull(points)
     with_more = add_points(hull)
 
-    C=CatmullRomChain(with_more+with_more[0:1])
+    C=CatmullRomChain(with_more)
     print C
 
+    pdb.set_trace()
     print 'points:', points
     print 'hull:', hull
 
