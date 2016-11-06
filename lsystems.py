@@ -69,7 +69,7 @@ def turtle_graphics(pattern, angle_increment = 25):
 
     return segments
 
-def turtle_graphics_tree(pattern):
+def turtle_graphics_tree(pattern, angle_increment = 27):
     start = [0,0]
     segments = []
 
@@ -85,9 +85,9 @@ def turtle_graphics_tree(pattern):
             segments.append([pos, new_pos])
             pos = new_pos
         elif char == '-':
-            angle += 25
+            angle += angle_increment
         elif char == '+':
-            angle -= 25
+            angle -= angle_increment
         elif char == '[':
             stack.append([pos, angle])
         elif char == ']':
@@ -108,4 +108,5 @@ def draw_system(pattern):
     display(segments)
 
 #draw_system(Lsystem({'1': '11[01', '0': '1[0]0'}).run('0', 5))
-display(turtle_graphics_tree(Lsystem({'X': 'F-[[X]+X]+F[+FX]-X', 'F': 'FF'}).run('X', 7)))
+#display(turtle_graphics_tree(Lsystem({'X': 'F-[[X]+X]+F[+FX]-X', 'F': 'FF'}).run('X', 7)))
+display(turtle_graphics_tree(Lsystem({'X': 'F[+X][-X]FX', 'F': 'FF'}).run('X', 7), angle_increment = 25.7))
