@@ -3,6 +3,7 @@ from math import cos, sin, radians
 
 class Player(pygame.sprite.Sprite):
     OFFSET = 90 #Offset to get the car facing the right direction
+    DEBUG = True
 
     def __init__(self):
 	self.start_pose_x = 50
@@ -49,11 +50,11 @@ class Player(pygame.sprite.Sprite):
         self.rect.left = self.pose.x + rect_x
         self.rect.top = self.pose.y + rect_y
 
-        print "after", self.rect
-
-	print "x: ",self.pose.x
-	print "y: ",self.pose.y
-	print "heading: ", self.heading
+        if DEBUG:
+            print "after", self.rect
+            print "x: ",self.pose.x
+            print "y: ",self.pose.y
+            print "heading: ", self.heading
 
 def rot_center(image, angle):
     """rotate a Surface, maintaining position."""
