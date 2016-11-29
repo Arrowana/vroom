@@ -1,7 +1,4 @@
 language: python
-virtualenv:
-  system_site_packages: true
-before_install:
-  - sudo apt-get install python-pygame
+sudo: required
 install: pip install -r requirements.txt
 script: pytest
