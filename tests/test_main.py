@@ -1,6 +1,8 @@
 import pygame
 from player import Player
 import main
+import os
+print os.getcwd()
 
 class SimEvent():
 	def __init__(self, key=None, type=None):

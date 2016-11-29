@@ -34,9 +34,6 @@ class Client:
 		self.state = None
 		self.userid = None
 	
-	def set_username(self, username):
-		self.username = username
-
 class GameState:
 	def __init__(self):
 		pass
@@ -66,16 +63,19 @@ while True:
 					s.send('id:{}'.format(current_userid))
 					current_userid += 1
 				else:
-					print 'Received state: {}, from: {}'.format(data, clients[s].username)
+					print 'Received state: {}, from: {}'.format(data, clients[s].userid)
 					clients[s].state = data
+					print struct.unpack('>3f', data)
 					
 	if time.time() - previous_update > 0.05:
 		#Update state
 		previous_update = time.time()
-		payload = ''
+		payload = 'state:'
 		for s, client in clients.items():
-			payload += '{}:{},'.format(client.userid, client.state)
-		print 'Send payload'
+			print client.userid
+			if client.userid != None and client.state:
+				payload += struct.pack('>h', client.userid) + client.state
+		print 'state payload: {}'.format(payload)
 	else:
 		payload = None
 

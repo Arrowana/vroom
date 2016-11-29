@@ -1,6 +1,7 @@
 import pygame
 from player import Player
 from camera import Camera
+import client
 
 class Map(pygame.sprite.Sprite):
 	def __init__(self):
@@ -49,6 +50,9 @@ def play():
 	clock = pygame.time.Clock()
 
 	player = Player()
+
+	network_handler = client.NetworkHandler('127.0.0.1', 5755)
+	network_entities = []
 
 	key_state = KeyState()
 
