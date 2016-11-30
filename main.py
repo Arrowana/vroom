@@ -51,8 +51,8 @@ def play():
 
 	player = Player()
 
-	network_handler = client.NetworkHandler('127.0.0.1', 5755)
 	network_entities = []
+	network_handler = client.NetworkHandler('127.0.0.1', 5755, network_entities)
 
 	key_state = KeyState()
 
@@ -64,11 +64,14 @@ def play():
 			handle_event(event, player, key_state)
 
 		player.update()
+		print [e.userid for e in network_entities]
 		camera.update(player, track)
+
+		network_handler.update(player)
 
 		screen.fill((0,0,0))
 
-		for entity in [track, player]:
+		for entity in [track, player] + network_entities:
 			screen.blit(entity.image, camera.apply(entity))
 
 		pygame.display.flip()

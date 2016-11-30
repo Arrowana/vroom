@@ -4,11 +4,15 @@ import re
 import struct
 import sys
 
+from player import Player
+
 FORMAT = '>h3f'
 
 class NetworkHandler:
-	def __init__(self, address, port):
+	def __init__(self, address, port, network_entities):
 		self._init_attributes()
+
+		self.network_entities = network_entities
 	
 		self._connect(address, port)
 		self._handshake()
@@ -34,15 +38,24 @@ class NetworkHandler:
 		else:
 			raise ValueError('{} is not a id response'.format(data))
 
-	def process(userid, state):
+	def process(self, userid, state):
+		x, y, heading = state
 		if userid in self.users:
-			self.users[userid]['state'] = {'x': state[0], 'y': state[1], 'heading': state[2]}
+			player = self.users[userid]['network_object']
 		else:
-			self.users[userid] = {'state': {'x': state[0], 'y': state[1], 'heading': state[2]}}
+			player = Player()
+			self.users[userid] = {'network_object': player} 
+			player.userid = userid
+			self.network_entities.append(player)
 
-	def update(self):
+		player.pose.x = x
+		player.pose.y = y
+		player.heading = heading
+		player.update_resources()
+
+	def update(self, player):
 		data = self.s.recv(1024)
-		print data
+		print repr(data)
 		if re.match(r'state:.*', data):
 			data = data[6:]
 			size = struct.calcsize(FORMAT)
@@ -50,14 +63,14 @@ class NetworkHandler:
 			while len(data) >= size:
 				state_bytes = data[:size]
 				data = data[size:]
-				userid, state = struct.unpack(FORMAT, state_bytes)
+				userid, x, y, heading = struct.unpack(FORMAT, state_bytes)
 				if userid != self.userid:
-					self.process(userid, state)
+					self.process(userid, (x, y, heading))
 		else:
 			print 'Received wrong data'
 		print data
-		x, y, h = 0.1, 0.2, 0.3
-		message = struct.pack('>3f', x, y, h)
+		#x, y, h = 0.1, 0.2, 0.3
+		message = struct.pack('>3f', player.pose.x, player.pose.y, player.heading)
 		self.s.send(message)
 
 	def close(self):

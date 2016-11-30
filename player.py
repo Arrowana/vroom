@@ -5,6 +5,7 @@ class Player(pygame.sprite.Sprite):
 	OFFSET = 90 #Offset to get the car facing the right direction
 
 	def __init__(self):
+		pygame.sprite.Sprite.__init__(self)
 		self.start_pose_x = 50
 		self.start_pose_y = 50
 
@@ -17,6 +18,8 @@ class Player(pygame.sprite.Sprite):
 		self.pose.x = self.start_pose_x
 		self.pose.y = self.start_pose_y
 
+		self.userid = None
+
 		self.L = 2
 
 		self.speed = 0
@@ -27,6 +30,16 @@ class Player(pygame.sprite.Sprite):
 
 	def normalize(self, angle):
 		return (angle+180)%360-180
+
+	def update_resources(self):
+		self.image, self.rect = rot_center(self.base_image, 
+			self.heading-self.OFFSET)
+
+		print(self.rect)
+
+		rect_x, rect_y = self.rect.topleft
+		self.rect.left = self.pose.x + rect_x
+		self.rect.top = self.pose.y + rect_y
 
 	def update(self):
 		heading_rad = radians(self.heading)
@@ -39,15 +52,7 @@ class Player(pygame.sprite.Sprite):
 		self.pose = self.pose.move(dx,-dy)
 		self.heading = self.normalize(self.heading+dheading)
 
-
-		self.image, self.rect = rot_center(self.base_image, 
-			self.heading-self.OFFSET)
-
-		print(self.rect)
-
-		rect_x, rect_y = self.rect.topleft
-		self.rect.left = self.pose.x + rect_x
-		self.rect.top = self.pose.y + rect_y
+		self.update_resources()
 
 		debug_pose(self.pose, self.heading)
 
