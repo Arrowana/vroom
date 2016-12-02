@@ -3,8 +3,9 @@ import time
 import re
 import struct
 import sys
+import select
 
-from player import Player
+import game_object
 
 FORMAT = '>h3f'
 
@@ -34,7 +35,7 @@ class NetworkHandler:
 
 		matched = re.match(r'id:(\d+)', data)
 		if matched:
-			userid = matched.groups(1)
+			self.userid = int(matched.groups(1)[0])
 		else:
 			raise ValueError('{} is not a id response'.format(data))
 
@@ -43,7 +44,7 @@ class NetworkHandler:
 		if userid in self.users:
 			player = self.users[userid]['network_object']
 		else:
-			player = Player()
+			player = game_object.Player()
 			self.users[userid] = {'network_object': player} 
 			player.userid = userid
 			self.network_entities.append(player)
@@ -53,8 +54,8 @@ class NetworkHandler:
 		player.heading = heading
 		player.update_resources()
 
-	def update(self, player):
-		data = self.s.recv(1024)
+	def _receive(self, r):
+		data = r.recv(1024)
 		print repr(data)
 		if re.match(r'state:.*', data):
 			data = data[6:]
@@ -68,10 +69,15 @@ class NetworkHandler:
 					self.process(userid, (x, y, heading))
 		else:
 			print 'Received wrong data'
-		print data
-		#x, y, h = 0.1, 0.2, 0.3
-		message = struct.pack('>3f', player.pose.x, player.pose.y, player.heading)
-		self.s.send(message)
+
+	def update(self, player):
+		readable, writable, exception = select.select([self.s], [self.s], [])
+		for r in readable:
+			self._receive(r)
+		
+		for w in writable:
+			message = struct.pack('>3f', player.pose.x, player.pose.y, player.heading)
+			w.send(message)
 
 	def close(self):
 		self.s.close()

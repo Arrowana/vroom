@@ -25,9 +25,6 @@ FORMAT = '>h3f'
 def package(userid, x, y, heading):
 	return struct.pack(FORMAT, userid, x, y, heading)
 
-def send():
-	clientsocket.send(struct.pack('>2f', *[random.random() for i in range(2)]))
-
 class Client:
 	def __init__(self):
 		self.username = None
@@ -65,7 +62,10 @@ while True:
 				else:
 					print 'Received state: {}, from: {}'.format(data, clients[s].userid)
 					clients[s].state = data
-					print struct.unpack('>3f', data)
+					try:
+						print struct.unpack('>3f', data)
+					except:
+						print repr(data)
 					
 	if time.time() - previous_update > 0.05:
 		#Update state
@@ -75,7 +75,7 @@ while True:
 			print client.userid
 			if client.userid != None and client.state:
 				payload += struct.pack('>h', client.userid) + client.state
-		print 'state payload: {}'.format(payload)
+		print 'state payload: {}'.format(repr(payload))
 	else:
 		payload = None
 
