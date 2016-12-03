@@ -7,7 +7,11 @@ import select
 
 import game_object
 
-FORMAT = '>h3f'
+ENDIANNESS = '>'
+FMT_CMD = 'h'
+FMT_USERID = 'h'
+FMT_STATE = '3f'
+FORMAT = ENDIANNESS + FMT_CMD + FMT_USERID + FMT_STATE
 
 class NetworkHandler:
 	def __init__(self, address, port, network_entities):
